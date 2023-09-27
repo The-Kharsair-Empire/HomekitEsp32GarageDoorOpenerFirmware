@@ -30,8 +30,8 @@ void setup() {
 
     initialize_relay();
 
-    homeSpan.setPairingCode("11122333"); // todo, use cli to set this number
-    homeSpan.begin(Category::GarageDoorOpeners, "Garage Door");
+    homeSpan.setPairingCode("23452345"); // todo, use cli to set this number
+    homeSpan.begin(Category::GarageDoorOpeners, "Garage Door Opener");
 
     garageDoorOpenerAccessory = new GarageDoorOpenerAccessory();
 
