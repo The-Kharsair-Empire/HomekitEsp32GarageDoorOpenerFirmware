@@ -13,8 +13,8 @@ int param_duration = 0;
 
 static SemaphoreHandle_t relay_auto_off_sem_binary;
 
-void switch_off_relay_task(void*) {
-    while (1) {
+[[noreturn]] void switch_off_relay_task(void*) {
+    while (true) {
         if (xSemaphoreTake(relay_auto_off_sem_binary, portMAX_DELAY) == pdTRUE) {
             vTaskDelay(param_duration / portTICK_PERIOD_MS);
             digitalWrite(RELAY_SIGNAL_PIN, LOW);

@@ -194,18 +194,21 @@ bool infer_is_door_open() {
     return false;
 }
 
-void sample_loop(void*) {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cppcoreguidelines-narrowing-conversions"
+[[noreturn]] void sample_loop(void*) {
     while(isnan(range_finder.Distance())) {
         vTaskDelay(sample_interval / portTICK_PERIOD_MS);
     }
 
     filtered_distance = range_finder.Distance();
     // Serial.println(filtered_distance);
-    while (1) {
+    while (true) {
         
         filtered_distance += (range_finder.Distance() - filtered_distance) * rc_alpha;
         vTaskDelay(sample_interval / portTICK_PERIOD_MS);
     }
 }
+#pragma clang diagnostic pop
 
 #endif

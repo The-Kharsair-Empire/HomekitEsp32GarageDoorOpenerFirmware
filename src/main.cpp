@@ -9,22 +9,6 @@ GarageDoorOpenerAccessory* garageDoorOpenerAccessory;
 xTaskHandle rangeFinderSampleTaskHandle;
 
 
-// struct LED : Service::LightBulb {
-//     int led_pin;
-//     SpanCharacteristic *power;
-
-//     LED(int pin): Service::LightBulb() {
-//         power =  new Characteristic::On();
-//         this->led_pin = pin;
-//         pinMode(pin, OUTPUT);
-//     }
-
-//     boolean update() {
-//         digitalWrite(led_pin, power->getNewVal());
-//         return true;
-//     }
-// };
-
 void setup() {
     Serial.begin(115200);
 
@@ -45,5 +29,4 @@ void setup() {
 
 void loop() {
     homeSpan.poll();
-//    Serial.println("Polling...");
 }

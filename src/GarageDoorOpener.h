@@ -51,29 +51,28 @@ struct GarageDoorOpener: Service::GarageDoorOpener {
     }
 
     void loop() override {
-        if (current->timeVal() > TIME_TAKEN_TO_OPEN_N_CLOSE) {
+        if (current->timeVal() > TIME_TAKEN_TO_OPEN_N_CLOSE && (current->getVal() == 2 || current->getVal() == 3)) {
 
             Serial.println("Wait time up");
 
-            if (infer_is_door_open()) {
+            if (infer_is_door_open() && target->getVal() == 0) {
                 Serial.println("door is open");
                 current->setVal(0);
-
-            } else {
+                obstruction->setVal(false);
+            } else if (!infer_is_door_open() && target->getVal() == 1) {
                 Serial.println("door is closed");
                 current->setVal(1);
+                obstruction->setVal(false);
+            } else if (infer_is_door_open() && target->getVal() == 1) {
+                Serial.println("door obstructed at open, target is to close");
+                obstruction->setVal(true);
+                current->setVal(4);
 
+            } else if (!infer_is_door_open() && target->getVal() == 0) {
+                Serial.println("door obstructed at closed, target is to open");
+                obstruction->setVal(true);
+                current->setVal(4);
             }
-
-            // if (target->getVal() == current->getVal())
-            //     obstruction->setVal(false);
-
-            // if (target->getVal() != current->getVal()) {
-            //     obstruction->setVal(true);
-            //     current->setVal(4);
-            //     Serial.println("door obstructed");
-            // }
-
 
         }
     }
