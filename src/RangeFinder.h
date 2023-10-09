@@ -180,7 +180,6 @@ int sample_interval = 1000;
 
 int threshold_min = 85, threshold_max = 230;
 
-
 SR04 range_finder(ECHO_PIN, TRIGGER_PIN);
 
 long get_distance() {

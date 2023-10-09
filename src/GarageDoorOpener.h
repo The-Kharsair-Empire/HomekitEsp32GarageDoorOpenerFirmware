@@ -27,9 +27,9 @@ struct GarageDoorOpener: Service::GarageDoorOpener {
     SpanCharacteristic* obstruction;
 
     GarageDoorOpener(): Service::GarageDoorOpener() {
-        current = new Characteristic::CurrentDoorState(1);
-        target = new Characteristic::TargetDoorState(1);
-        obstruction = new Characteristic::ObstructionDetected(false);
+        current = new Characteristic::CurrentDoorState(1, true);
+        target = new Characteristic::TargetDoorState(1, true);
+        obstruction = new Characteristic::ObstructionDetected(false, true);
 
         Serial.println("Setting up Garage Door Opener");
 
@@ -51,7 +51,8 @@ struct GarageDoorOpener: Service::GarageDoorOpener {
     }
 
     void loop() override {
-        if (current->timeVal() > TIME_TAKEN_TO_OPEN_N_CLOSE && (current->getVal() == 2 || current->getVal() == 3)) {
+        if (current->timeVal() > TIME_TAKEN_TO_OPEN_N_CLOSE && current->updated() &&
+        (current->getVal() == 2 || current->getVal() == 3 || current->getVal() == 4)) {
 
             Serial.println("Wait time up");
 
@@ -59,10 +60,12 @@ struct GarageDoorOpener: Service::GarageDoorOpener {
                 Serial.println("door is open");
                 current->setVal(0);
                 obstruction->setVal(false);
+
             } else if (!infer_is_door_open() && target->getVal() == 1) {
                 Serial.println("door is closed");
                 current->setVal(1);
                 obstruction->setVal(false);
+
             } else if (infer_is_door_open() && target->getVal() == 1) {
                 Serial.println("door obstructed at open, target is to close");
                 obstruction->setVal(true);

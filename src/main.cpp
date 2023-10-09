@@ -14,16 +14,16 @@ void setup() {
 
     initialize_relay();
 
+    xTaskCreatePinnedToCore(&sample_loop, "range finder",
+                            2048, nullptr, 1,
+                            &rangeFinderSampleTaskHandle, app_cpu);
+
+    homeSpan.setLogLevel(2);
+
     homeSpan.setPairingCode("23452345"); // todo, use cli to set this number
     homeSpan.begin(Category::GarageDoorOpeners, "Garage Door Opener");
 
     garageDoorOpenerAccessory = new GarageDoorOpenerAccessory();
-
-    Serial.println("setting up...");
-
-    xTaskCreatePinnedToCore(&sample_loop, "range finder",
-                            2048, nullptr, 1,
-                            &rangeFinderSampleTaskHandle, app_cpu);
 
 }
 
