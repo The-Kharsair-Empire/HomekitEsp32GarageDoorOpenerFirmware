@@ -59,11 +59,13 @@ struct GarageDoorOpener: Service::GarageDoorOpener {
                 Serial.println("door is open");
                 current->setVal(0);
                 obstruction->setVal(false);
+
             } else if (!door_open && target->getVal() == 1) {
                 Serial.println("door is closed");
                 current->setVal(1);
                 obstruction->setVal(false);
             } else if (door_open && target->getVal() == 1) {
+
                 Serial.println("door obstructed at open, target is to close");
                 obstruction->setVal(true);
                 current->setVal(4);
