@@ -13,9 +13,9 @@ volatile bool door_open = false;
 void IRAM_ATTR onPinInterrupt() {
     int reed_switch_state = digitalRead(REED_SWITCH_PIN);
     if (reed_switch_state == HIGH) { // magnet detected
-        door_open = true;
+        door_open = false; // door close when magnet is detected
     } else {
-        door_open = false;
+        door_open = true;
     }
 }
 

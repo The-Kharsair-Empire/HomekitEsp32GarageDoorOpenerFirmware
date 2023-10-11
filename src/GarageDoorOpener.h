@@ -27,9 +27,9 @@ struct GarageDoorOpener: Service::GarageDoorOpener {
     SpanCharacteristic* obstruction;
 
     GarageDoorOpener(): Service::GarageDoorOpener() {
-        current = new Characteristic::CurrentDoorState(1, true);
-        target = new Characteristic::TargetDoorState(1, true);
-        obstruction = new Characteristic::ObstructionDetected(false, true);
+        current = new Characteristic::CurrentDoorState(1);
+        target = new Characteristic::TargetDoorState(1);
+        obstruction = new Characteristic::ObstructionDetected(false);
 
         Serial.println("Setting up Garage Door Opener");
     }
@@ -50,7 +50,7 @@ struct GarageDoorOpener: Service::GarageDoorOpener {
     }
 
     void loop() override {
-        if (current->timeVal() > TIME_TAKEN_TO_OPEN_N_CLOSE && current->updated() &&
+        if (current->timeVal() > TIME_TAKEN_TO_OPEN_N_CLOSE &&
         (current->getVal() == 2 || current->getVal() == 3 || current->getVal() == 4)) {
 
             Serial.println("Wait time up");
