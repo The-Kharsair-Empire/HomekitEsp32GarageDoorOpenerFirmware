@@ -6,7 +6,7 @@
 #include "Relay.h"
 #include "ReedSwitch.h"
 
-#define TIME_TAKEN_TO_OPEN_N_CLOSE 8000  // 8s for the door to completely open and closed
+#define CHECK_INTERVAL 8000  // this must be greater than the time taken for door to completely open or close
 
 struct AccessoryInformation: Service::AccessoryInformation {
     SpanCharacteristic* name;
@@ -44,17 +44,26 @@ struct GarageDoorOpener: Service::GarageDoorOpener {
             switch_on_relay(200);
             current->setVal(3);
             Serial.println("Home app is closing the garage door");
+        } else if (current->getVal() == 2 || current->getVal() == 3) {
+            // e-stop during door closing or opening
+            switch_on_relay(200);
+            if (current->getVal() == 2 && target->getNewVal() == 1) {
+                // e stop is trigger when door is opening, (target state changed from open 0 to closed 1)
+                target->setVal(0); // set target to open, so user can now close to door.
+            } else if (current->getVal() == 3 && target->getNewVal() == 0) {
+                target->setVal(1);
+            }
+            current->setVal(4); // door is stopped
+        } else if (current->getVal() == 4 && target->getNewVal() == 0) { // !!!!!!!!
+            switch_on_relay(200);
+            current->setVal(2);
         }
 
         return true;
     }
 
     void loop() override {
-        if (current->timeVal() > TIME_TAKEN_TO_OPEN_N_CLOSE &&
-        (current->getVal() == 2 || current->getVal() == 3 || current->getVal() == 4)) {
-
-            Serial.println("Wait time up");
-
+        if (current->timeVal() > CHECK_INTERVAL) {
             if (door_open && target->getVal() == 0) {
                 Serial.println("door is open");
                 current->setVal(0);
@@ -74,6 +83,8 @@ struct GarageDoorOpener: Service::GarageDoorOpener {
                 Serial.println("door obstructed at closed, target is to open");
                 obstruction->setVal(true);
                 current->setVal(4);
+            } else {
+                current->setVal(current->getVal()); // just update to its original so that it reset the timer
             }
 
         }
